@@ -167,14 +167,26 @@
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
                 <p>今天在使用chart.js时遇到这样一个问题，明明给canvas画布设置了宽高，但是调用chartJs画图后canvas被撑开。</p>
 <hr>
-<p>多方查阅，终于找到问题所在，问题也迎刃而解啦~<br>canvas设置宽高的方式有三种：</p>
-<p>1,默认格式<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/canvas&gt;</div></pre></td></tr></table></figure></p>
-<p>2,css控制<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas style=&quot;width: 100px;height: 100px&quot;&gt;&lt;/canvas&gt;</div></pre></td></tr></table></figure></p>
-<p>3,js控制<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;</div><div class="line">var dom = document.getElementById(&apos;canvas);</div><div class="line">dom.width = &apos;100&apos;;</div><div class="line">dom.height = &apos;100&apos;;</div></pre></td></tr></table></figure></p>
-<p>canvas在默认情况下，width=’350’,height=’150’,当我们使用第一种或者第三种方式设置canvas的size时，相当于修改了它的默认值,<br>而当我们用第二种方式时，相当于对原始画布进行了一个’拉伸改造’到我们制定的大小，这里可以通过在canvas中画一个矩形，然后用这三<br>种方法设置canvas大小，看矩形的变化。</p>
-<p>抓住了重点，再看遇到的问题，设置了   <canvas width="100" height="100"></canvas>,但是chartJs画图后canvas大小明显被改了,<br>应该是canvas在画图之后重置了canvas大小,‘罪魁祸首’找到了,查看chartJs源码<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">platform文件夹下</div><div class="line">function readUsedSize(element, property)&#123;&#125;</div><div class="line">function initCanvas(canvas, config)&#123;&#125;</div><div class="line">acquireContext: function(item, config) &#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>初步认为，在canvas显示之前，对其size做了处理（呃，，源码有些地方还是没有看懂）</p>
-<p>当在<canvas>上直接设置了width,height, 导致画图时canvas被撑开，<br>解决办法：<br>1,去掉设置的width,height;<br>2,用设置了宽高的div包裹canvas<br>3,用class=’canvas’, .canvas{width: ‘’,height: ‘’}</canvas></p>
+<p>多方查阅，终于找到问题所在，问题也迎刃而解啦~
+canvas设置宽高的方式有三种：</p>
+<p>1,默认格式
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/canvas&gt;</div></pre></td></tr></table></figure></p>
+<p>2,css控制
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas style=&quot;width: 100px;height: 100px&quot;&gt;&lt;/canvas&gt;</div></pre></td></tr></table></figure></p>
+<p>3,js控制
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;</div><div class="line">var dom = document.getElementById(&apos;canvas);</div><div class="line">dom.width = &apos;100&apos;;</div><div class="line">dom.height = &apos;100&apos;;</div></pre></td></tr></table></figure></p>
+<p>canvas在默认情况下，width='350',height='150',当我们使用第一种或者第三种方式设置canvas的size时，相当于修改了它的默认值,
+而当我们用第二种方式时，相当于对原始画布进行了一个'拉伸改造'到我们制定的大小，这里可以通过在canvas中画一个矩形，然后用这三
+种方法设置canvas大小，看矩形的变化。</p>
+<p>抓住了重点，再看遇到的问题，设置了
+&lt;canvas width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/canvas&gt;
+但是chartJs画图后canvas大小明显被改了,应该是canvas在画图之后重置了canvas大小,‘罪魁祸首’找到了,查看chartJs源码
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">platform文件夹下</div><div class="line">function readUsedSize(element, property)&#123;&#125;</div><div class="line">function initCanvas(canvas, config)&#123;&#125;</div><div class="line">acquireContext: function(item, config) &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>初步认为，在canvas显示之前，对其size做了处理（呃，，源码有些地方还是没有看懂），当在&lt;canvas&gt;上直接设置了width,height, 导致画图时canvas被撑开
+解决办法：
+1,去掉设置的width,height;
+2,用设置了宽高的div包裹canvas
+3,用class='canvas', .canvas{width: '',height: ''}</p>
 
                 <hr>
                 
